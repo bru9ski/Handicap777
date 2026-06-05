@@ -11,24 +11,18 @@ const navItems = [
   { icon: LayoutDashboard, label: 'Dashboard', href: '/dashboard' },
 ]
 
+export const LOGO_DATA_URI = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAfQAAAH0CAYAAADL1t+KAABiJklEqVR4nO3deXxU5f3/8ec5M5M9k0lmNqSQkJAtC7IioKALiGUXxQVFcMUr1LXg1+Veq66iVqtrtYJaRFBEpC4gCuIqW0A2QhZCSJYZssm8ybzvH5N5JpPJnJkzM5P5fDzP4+E8M3Nyzjnf8z3P+5wz55w5Q0RERERERERERET0M3L5nQAiIiIiIiIiIiKiW6MDFhEREREREREREdGdYQMWERERERERERER0Z1hAxYRERERERERERHRnWEDFhEREREREREREdGdYQMWERERERERERER0Z1hAxYRERERERERERHRnWEDFhEREREREREREdGd8f8A7dNwXz4u5T0AAAAASUVORK5CYII="
+
 function NavLogo() {
   return (
-    <div className="flex items-center gap-2.5">
-      <div className="relative h-8">
-        <img
-          src="/logo.png"
-          alt="Handicap Pro"
-          className="h-8 w-auto object-contain"
-          onError={(e) => {
-            const el = e.target as HTMLImageElement
-            el.style.display = 'none'
-          }}
-        />
-      </div>
-      <div className="flex flex-col leading-none">
-        <span className="text-white text-sm font-bold tracking-widest uppercase">HANDICAP</span>
-        <span className="text-yellow-400 text-[9px] font-semibold tracking-[0.35em] uppercase">Pro</span>
-      </div>
+    <div className="flex items-center gap-1">
+      <img
+        src={LOGO_DATA_URI}
+        alt="Handicap Pro"
+        className="h-9 w-auto object-contain select-none"
+        draggable={false}
+        style={{ filter: 'drop-shadow(0 0 4px rgba(255,215,0,0.18))' }}
+      />
     </div>
   )
 }

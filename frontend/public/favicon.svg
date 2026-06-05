@@ -1,3 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
-  <polygon points="24,2 38,26 29,26 35,46 10,30 21,30" fill="#FFD700"/>
+  <defs>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="1.5" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <polygon points="26,2 40,22 31,22 34,46 8,26 19,26" fill="#FFD700" filter="url(#glow)"/>
 </svg>
