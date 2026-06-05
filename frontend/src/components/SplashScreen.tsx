@@ -1,193 +1,110 @@
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useMemo, useState, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import clsx from 'clsx'
 
-const SPLASH_DURATION = 4000
-const COUNTDOWN_FROM = 3
+const SPLASH_DURATION = 4200
+const LOGO_DATA_URI = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAfQAAAH0CAYAAADL1t+KAABiJklEQVR4nO3deXxU5f3/8dc5M5M9k0lmNqSQkJAtC7IioKALiGUXxQVFcMUr1LXg1+Veq66iVqtrtYJaRFBEpC4gCuIqW0A2QhZCSJYZssm8ybzvH5N5JpPJnJkzM5P5fDzP4+E8M3Nyzjnf8z3P+5wz55w5Q0RERERERERERET0M3L5nQAiIiIiIiIiIiKiW6MDFhEREREREREREdGdYQMWERERERERERER0Z1hAxYRERERERERERHRnWEDFhEREREREREREdGdYQMWERERERERERER0Z1hAxYRERERERERERHRnWEDFhEREREREREREdGdYQMWERERERERERER0Z1hAxYRERERERERERHRnWEDFhEREREREREREdGdYQMWERERERERERER0Z1hAxYRERERERERERHRnWEDFhEREREREREREdGdYQMWERERERERERER0Z1hAxYRERERERERERHRnWEDFhEREREREREREdGdYQMWERERERERERER0Z1hAxYRERERERERERHRnWEDFhEREREREREREdGdYQMWERERERERERER0Z1hAxYRERERERERERHRnWEDFhEREREREREREdGdYQMWERERERERERER0Z1hAxYRERERERERERHRnWEDFhEREREREREREdGdYQMWERERERERERER0Z1hAxYRERERERERERHRnWEDFhEREREREREREdGdYQMWERERERERERER0Z1hAxYRERERERERERHRnWEDFhEREREREREREdGdYQMWERERERERERER0Z1hAxYRERERERERERHRnWEDFhEREREREREREdGdYQMWERERERERERER0Z1hAxYRERERERERERHRnWEDFhEREREREREREdGdYQMWERERERERERER0Z1hAxYRERERERERERHRnWEDFhEREREREREREdGdYQMWERERERERERER0Z1hAxYRERERERERERHRnWEDFhEREREREREREdGdYQMWERERERERERER0Z1hAxYRERERERERERHRnWEDFhEREREREREREdGdYQMWERERERERERER0Z1hAxYRERERERERERHRnWEDFhEREREREREREdGdYQMWERERERERERER0Z1hAxYRERERERERERHRnWEDFhEREREREREREdGdYQMWERERERERERER0Z1hAxYRERERERERERHRnWEDFhEREREREREREdGdYQMWERERERERERER0Z1hAxYRERERERERERHRnWEDFhEREREREREREdGdYQMWERERERERERER0Z1hAxYRERERERERERHRnWEDFhEREREREREREdGdYQMWERERERERERER0Z1hAxYRERERERERERHRnWEDFhEREREREREREdGdYQMWERERERERERER0Z1hAxYRERERERERERHRnWEDFhEREREREREREdGdYQMWERERERERERER0Z1hAxYRERERERERERHRnWEDFhEREREREREREdGdYQMWERERERERERER0Z1hAxYRERERERERERHRnWEDFhEREREREREREdGdYQMWERERERERERER0Z1hAxYRERERERERERHRnWEDFhEREREREREREdGdYQMWERERERERERER0Z1hAxYRERERERERERHRnWEDFhEREREREREREdGdYQMWERERERERERER0Z1hAxYRERERERERERHRnWEDFhEREREREREREdGdYQMWERERERERERER0Z1hAxYRERERERERERHRnWEDFhEREREREREREdGdYQMWERERERERERER0Z1hAxYRERERERERERHRnWEDFhEREREREREREdGdYQMWERERERERERER0Z1hAxYRERERERERERHRnWEDFhEREREREREREdGdYQMWERERERERERER0Z1hAxYRERERERERERHRnWEDFhEREREREREREdGdYQMWERERERERERER0Z1hAxYRERERERERERHRnWEDFhEREREREREREdGdYQMWERERERERERER0Z1hAxYRERERERERERHRnWEDFhEREREREREREdGdYQMWERERERERERER0Z1hAxYRERERERERERHRnWEDFhEREREREREREdGdYQMWERERERERERER0Z1hAxYRERERERERERHRnWEDFhEREREREREREdGdYQMWERERERERERER0Z1hAxYRERERERERERHRnWEDFhEREREREREREdGd8f8A7dNwXz4u5T0AAAAASUVORK5CYII="
 
-function SevenSegmentDigit({ char, dim = false }: { char: string; dim?: boolean }) {
-  return (
-    <span
-      className={clsx(
-        'seven-segment text-6xl md:text-8xl font-bold tabular-nums transition-all duration-300',
-        dim ? 'segment-off' : 'segment-digit'
-      )}
-      style={{ minWidth: '1ch', display: 'inline-block', textAlign: 'center' }}
-    >
-      {char}
-    </span>
-  )
-}
-
-function SevenSegmentDisplay({ value, isOff }: { value: number; isOff: boolean }) {
-  const str = value.toString()
-  return (
-    <div className="flex items-center justify-center gap-2 my-8">
-      <span
-        className={clsx(
-          'seven-segment text-xs uppercase tracking-[0.4em] font-medium transition-all duration-300',
-          isOff ? 'text-yellow-500/10' : 'text-yellow-500/60'
-        )}
-      >
-        LOADING
-      </span>
-      <div className="flex items-center gap-1 mx-4">
-        {str.split('').map((ch, i) => (
-          <SevenSegmentDigit key={i} char={ch} dim={isOff} />
-        ))}
-      </div>
-      <span
-        className={clsx(
-          'seven-segment text-xs uppercase tracking-[0.4em] font-medium transition-all duration-300',
-          isOff ? 'text-yellow-500/10' : 'text-yellow-500/60'
-        )}
-      >
-        SEC
-      </span>
-    </div>
-  )
-}
-
-function LogoDisplay() {
-  const [imgFailed, setImgFailed] = useState(false)
-
-  if (imgFailed) {
-    return (
-      <div className="flex items-center gap-3">
-        <svg width="52" height="68" viewBox="0 0 48 64" fill="none">
-          <polygon
-            points="24,0 36,28 28,28 34,64 12,32 22,32"
-            fill="#FFD700"
-            style={{ filter: 'drop-shadow(0 0 14px rgba(255,215,0,0.8))' }}
-          />
-        </svg>
-        <div className="flex flex-col leading-none">
-          <span className="text-white text-3xl font-extrabold tracking-widest uppercase">
-            HANDICAP
-          </span>
-          <span className="text-yellow-400 text-sm font-semibold tracking-[0.35em] uppercase mt-0.5">
-            PRO
-          </span>
-        </div>
-      </div>
-    )
-  }
-
-  return (
-    <img
-      src="/logo.png"
-      alt="Handicap Pro"
-      className="max-h-24 max-w-[280px] object-contain"
-      onError={() => setImgFailed(true)}
-    />
-  )
-}
+const loadingSteps = [
+  'BOOTING INTERFACE',
+  'MOUNTING SECURE MODULES',
+  'VERIFYING CONTROL NODES',
+  'LOADING DASHBOARD CORE',
+  'SYSTEM READY'
+]
 
 export default function SplashScreen() {
   const navigate = useNavigate()
-  const [countdown, setCountdown] = useState(COUNTDOWN_FROM)
-  const [isSegOff, setIsSegOff] = useState(false)
+  const [progress, setProgress] = useState(0)
   const [isFinished, setIsFinished] = useState(false)
   const [showButton, setShowButton] = useState(false)
   const [isExiting, setIsExiting] = useState(false)
 
   useEffect(() => {
-    const intervalMs = SPLASH_DURATION / COUNTDOWN_FROM
-    const timer = setInterval(() => {
-      setCountdown((prev) => {
-        const next = prev - 1
-        if (next <= 0) {
-          clearInterval(timer)
-          setTimeout(() => {
-            setIsSegOff(true)
-            setTimeout(() => {
-              setIsFinished(true)
-              setShowButton(true)
-            }, 400)
-          }, 300)
-          return 0
-        }
-        return next
-      })
-    }, intervalMs)
-    return () => clearInterval(timer)
+    const start = performance.now()
+    let raf = 0
+
+    const tick = (now: number) => {
+      const elapsed = now - start
+      const pct = Math.min(100, Math.round((elapsed / SPLASH_DURATION) * 100))
+      setProgress(pct)
+
+      if (pct < 100) {
+        raf = requestAnimationFrame(tick)
+      } else {
+        setIsFinished(true)
+        setTimeout(() => setShowButton(true), 220)
+      }
+    }
+
+    raf = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(raf)
   }, [])
+
+  const currentStep = useMemo(() => {
+    const index = Math.min(
+      loadingSteps.length - 1,
+      Math.floor((progress / 100) * loadingSteps.length)
+    )
+    return loadingSteps[index]
+  }, [progress])
 
   const handleEnter = useCallback(() => {
     setIsExiting(true)
-    setTimeout(() => navigate('/dashboard'), 450)
+    setTimeout(() => navigate('/dashboard'), 420)
   }, [navigate])
 
   return (
     <div
       className={clsx(
-        'grain-overlay fixed inset-0 z-50 flex flex-col items-center justify-center',
-        'transition-opacity duration-500',
-        isExiting ? 'opacity-0' : 'opacity-100'
+        'fixed inset-0 z-50 flex items-center justify-center hacker-bg grain-overlay',
+        isExiting ? 'opacity-0 transition-opacity duration-500' : 'opacity-100 transition-opacity duration-500'
       )}
-      style={{
-        background: 'radial-gradient(ellipse at center, #14140F 0%, #0A0A0B 70%)',
-      }}
     >
-      {/* Subtle grid lines */}
-      <div
-        className="absolute inset-0 pointer-events-none opacity-[0.04]"
-        style={{
-          backgroundImage:
-            'repeating-linear-gradient(0deg, transparent, transparent 60px, rgba(255,215,0,0.3) 60px, rgba(255,215,0,0.3) 61px)',
-        }}
-      />
+      <div className="absolute inset-0 scanline-overlay pointer-events-none" />
 
-      <div className="relative z-10 flex flex-col items-center">
-        {/* Logo with glow animation */}
-        <div
-          className={clsx(!isFinished && 'animate-pulse-glow')}
-        >
-          <LogoDisplay />
-        </div>
+      <div className="relative z-10 w-full max-w-xl px-6">
+        <div className="flex flex-col items-center text-center">
+          <img
+            src={LOGO_DATA_URI}
+            alt="Handicap Pro"
+            className="logo-sheen w-[250px] md:w-[320px] object-contain select-none"
+            draggable={false}
+          />
 
-        {/* 7-Segment countdown */}
-        <div
-          className={clsx(
-            'transition-all duration-400',
-            isSegOff ? 'opacity-0 scale-95' : 'opacity-100 scale-100'
-          )}
-        >
-          <SevenSegmentDisplay value={countdown} isOff={isSegOff} />
-        </div>
+          <div className="mt-10 w-full max-w-md rounded-2xl border border-white/6 bg-white/[0.015] px-5 py-5 backdrop-blur-[2px]">
+            <div className="flex items-center justify-between mono-terminal text-[10px] uppercase tracking-[0.25em] text-gray-500">
+              <span>HANDICAP PRO // INIT</span>
+              <span className="blink-soft">LIVE</span>
+            </div>
 
-        {/* Progress bar */}
-        {!isFinished && (
-          <div className="w-48 h-0.5 bg-dark-400 rounded-full overflow-hidden mt-2">
-            <div
-              className="h-full bg-yellow-500 rounded-full"
-              style={{
-                width: `${((COUNTDOWN_FROM - countdown) / COUNTDOWN_FROM) * 100}%`,
-                transition: `width ${SPLASH_DURATION / COUNTDOWN_FROM}ms linear`,
-              }}
-            />
+            <div className="mt-4 space-y-2 text-left mono-terminal text-[11px] md:text-xs uppercase tracking-[0.18em] text-gray-400">
+              <div className="terminal-line">&gt; {currentStep}</div>
+              <div className="text-gray-600">&gt; PROGRESS [{progress}%]</div>
+            </div>
+
+            <div className="mt-5 h-2 w-full overflow-hidden rounded-full loading-track">
+              <div
+                className="loading-fill h-full rounded-full transition-[width] duration-150 ease-out"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
           </div>
-        )}
 
-        {/* Enter button */}
-        <div
-          className={clsx(
-            'mt-10 flex flex-col items-center gap-2 transition-all duration-500',
-            showButton
-              ? 'opacity-100 translate-y-0'
-              : 'opacity-0 translate-y-4 pointer-events-none'
-          )}
-        >
-          <button
-            className="btn-primary min-w-[180px] text-base tracking-widest uppercase"
-            onClick={handleEnter}
-            disabled={!showButton}
+          <div
+            className={clsx(
+              'mt-8 transition-all duration-500',
+              showButton ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3 pointer-events-none'
+            )}
           >
-            Entrar
-          </button>
-          <p className="text-xs text-gray-700 tracking-[0.3em] uppercase">
-            Sistema pronto
-          </p>
+            <button
+              onClick={handleEnter}
+              disabled={!isFinished}
+              className="btn-primary min-w-[180px]"
+            >
+              Entrar
+            </button>
+          </div>
         </div>
       </div>
     </div>
