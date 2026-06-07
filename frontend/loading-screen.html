@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HANDICAP PRO — Loading</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --yellow: #F5C518;
+      --yellow-glow: rgba(245, 197, 24, 0.6);
+      --yellow-soft: rgba(245, 197, 24, 0.15);
+      --white: #FFFFFF;
+      --white-muted: rgba(255,255,255,0.7);
+      --white-faint: rgba(255,255,255,0.35);
+      --bg: #000000;
+      --font-display: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+      --font-body: 'Barlow', 'Arial', sans-serif;
+    }
+
+    @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Barlow:wght@400;500;600&display=swap');
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      background: var(--bg);
+      color: var(--white);
+      font-family: var(--font-body);
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── LOADING SCREEN WRAPPER ── */
+    #loading-screen {
+      position: fixed;
+      inset: 0;
+      background: #000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      gap: 48px;
+    }
+
+    /* ── LOGO CONTAINER ── */
+    .logo-container {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      opacity: 0;
+      transform: scale(0.88) translateY(12px);
+      animation: logoReveal 1.1s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
+    }
+
+    @keyframes logoReveal {
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    /* ── LOGO SVG WRAPPER — metallic gleam clip ── */
+    .logo-gleam-wrapper {
+      position: relative;
+      overflow: hidden;
+      border-radius: 4px;
+    }
+
+    /* ── LOGO SVG ── */
+    .logo-svg {
+      width: clamp(280px, 40vw, 460px);
+      height: auto;
+      display: block;
+      filter: drop-shadow(0 0 0px rgba(245,197,24,0));
+      animation: logoGlow 3.5s ease-in-out 1.4s infinite alternate;
+    }
+
+    @keyframes logoGlow {
+      0%   { filter: drop-shadow(0 0 6px rgba(245,197,24,0.25)) drop-shadow(0 0 20px rgba(245,197,24,0.08)); }
+      100% { filter: drop-shadow(0 0 18px rgba(245,197,24,0.55)) drop-shadow(0 0 48px rgba(245,197,24,0.22)); }
+    }
+
+    /* ── LIGHTNING BOLT ENERGY PULSE ── */
+    .bolt-pulse {
+      animation: boltPulse 2.2s ease-in-out 1.2s infinite;
+    }
+
+    @keyframes boltPulse {
+      0%   { opacity: 1; }
+      45%  { opacity: 0.55; }
+      65%  { opacity: 1; }
+      80%  { opacity: 0.75; }
+      100% { opacity: 1; }
+    }
+
+    /* ── SHIMMER OVERLAY (metallic gleam) ── */
+    .gleam-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        105deg,
+        transparent 20%,
+        rgba(255,255,255,0) 35%,
+        rgba(255,255,255,0.28) 47%,
+        rgba(255,255,255,0.55) 50%,
+        rgba(255,255,255,0.28) 53%,
+        rgba(255,255,255,0) 65%,
+        transparent 80%
+      );
+      background-size: 300% 100%;
+      background-position: -100% 0;
+      pointer-events: none;
+      border-radius: 4px;
+      animation: gleamSlide 3.8s ease-in-out 2.2s infinite;
+    }
+
+    @keyframes gleamSlide {
+      0%   { background-position: -100% 0; opacity: 0; }
+      8%   { opacity: 1; }
+      50%  { background-position: 200% 0; opacity: 1; }
+      65%  { opacity: 0; }
+      100% { background-position: 200% 0; opacity: 0; }
+    }
+
+    /* ── ENTER BUTTON ── */
+    .enter-btn {
+      position: relative;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(16px);
+      padding: 14px 52px;
+      background: transparent;
+      border: 1px solid rgba(245,197,24,0.55);
+      border-radius: 3px;
+      color: var(--yellow);
+      font-family: var(--font-display);
+      font-size: clamp(13px, 1.4vw, 15px);
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 200ms ease, border-color 200ms ease, color 200ms ease, box-shadow 200ms ease;
+      animation: btnReveal 0.9s cubic-bezier(0.16, 1, 0.3, 1) 5s forwards;
+    }
+
+    @keyframes btnReveal {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .enter-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        105deg,
+        transparent 25%,
+        rgba(255,255,255,0) 38%,
+        rgba(255,255,255,0.18) 48%,
+        rgba(255,255,255,0.35) 50%,
+        rgba(255,255,255,0.18) 52%,
+        rgba(255,255,255,0) 62%,
+        transparent 75%
+      );
+      background-size: 300% 100%;
+      background-position: -100% 0;
+      pointer-events: none;
+      animation: btnGleam 3.8s ease-in-out 5.8s infinite;
+    }
+
+    @keyframes btnGleam {
+      0%   { background-position: -100% 0; opacity: 0; }
+      8%   { opacity: 1; }
+      50%  { background-position: 200% 0; opacity: 1; }
+      65%  { opacity: 0; }
+      100% { background-position: 200% 0; opacity: 0; }
+    }
+
+    .enter-btn:hover {
+      background: rgba(245,197,24,0.08);
+      border-color: var(--yellow);
+      color: #fff;
+      box-shadow: 0 0 24px rgba(245,197,24,0.22), 0 0 6px rgba(245,197,24,0.12);
+    }
+
+    .enter-btn:active {
+      background: rgba(245,197,24,0.15);
+      box-shadow: 0 0 32px rgba(245,197,24,0.3);
+    }
+
+    /* ── AMBIENT PARTICLES ── */
+    .particles {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .particle {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: var(--yellow);
+      border-radius: 50%;
+      opacity: 0;
+    }
+
+    /* ── SUBTLE BOTTOM VIGNETTE ── */
+    .vignette {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(
+        ellipse 90% 80% at 50% 50%,
+        transparent 40%,
+        rgba(0,0,0,0.55) 100%
+      );
+      pointer-events: none;
+    }
+
+    /* ── BOTTOM TAGLINE ── */
+    .tagline {
+      position: fixed;
+      bottom: clamp(24px, 4vh, 48px);
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.18);
+      white-space: nowrap;
+      opacity: 0;
+      animation: taglineReveal 1.2s ease 1.8s forwards;
+    }
+
+    @keyframes taglineReveal {
+      to { opacity: 1; }
+    }
+
+    /* ── FADE OUT FULL SCREEN ON ENTER ── */
+    #loading-screen.exit {
+      animation: screenExit 0.7s cubic-bezier(0.7, 0, 1, 1) forwards;
+    }
+
+    @keyframes screenExit {
+      to { opacity: 0; pointer-events: none; }
+    }
+
+    /* ── MAIN APP (hidden until enter) ── */
+    #app {
+      display: none;
+      place-items: center;
+      height: 100dvh;
+      background: #000;
+      color: #fff;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+      .logo-container { opacity: 1; transform: none; }
+      .enter-btn { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Ambient particles -->
+  <div class="particles" id="particles"></div>
+  <div class="vignette"></div>
+
+  <!-- Loading Screen -->
+  <div id="loading-screen">
+
+    <!-- LOGO -->
+    <div class="logo-container">
+      <div class="logo-gleam-wrapper">
+        <!-- HANDICAP PRO SVG Logo -->
+        <svg class="logo-svg" viewBox="0 0 460 160" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Handicap Pro">
+          <defs>
+            <!-- Yellow gradient for the bolt -->
+            <linearGradient id="boltGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#FFE066"/>
+              <stop offset="50%" stop-color="#F5C518"/>
+              <stop offset="100%" stop-color="#D4A017"/>
+            </linearGradient>
+            <!-- Inner glow filter for bolt -->
+            <filter id="boltGlow" x="-40%" y="-40%" width="180%" height="180%">
+              <feGaussianBlur stdDeviation="3.5" result="blur"/>
+              <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+            </filter>
+            <!-- Shimmer filter for text -->
+            <filter id="textShine" x="-5%" y="-5%" width="110%" height="110%">
+              <feGaussianBlur stdDeviation="0.6" result="blur"/>
+              <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+            </filter>
+          </defs>
+
+          <!-- ╔══ LIGHTNING BOLT (left, large) ══╗ -->
+          <g class="bolt-pulse" filter="url(#boltGlow)">
+            <!-- Main bolt shape -->
+            <polygon
+              points="62,12  38,82  58,82  34,148  92,68  68,68  92,12"
+              fill="url(#boltGrad)"
+            />
+            <!-- Inner highlight -->
+            <polygon
+              points="65,20  46,76  62,76  44,130  82,76  66,76  84,20"
+              fill="rgba(255,240,150,0.22)"
+            />
+          </g>
+
+          <!-- ╔══ HANDICAP (main title) ══╗ -->
+          <text
+            x="116" y="92"
+            font-family="'Barlow Condensed', 'Arial Narrow', sans-serif"
+            font-weight="900"
+            font-size="88"
+            letter-spacing="-1"
+            fill="#FFFFFF"
+            filter="url(#textShine)"
+          >HANDICAP</text>
+
+          <!-- ╔══ PRO (subtitle / badge) ══╗ -->
+          <!-- PRO rectangle badge -->
+          <rect x="116" y="108" width="68" height="28" rx="2" fill="#F5C518"/>
+          <text
+            x="150" y="128"
+            font-family="'Barlow Condensed', 'Arial Narrow', sans-serif"
+            font-weight="800"
+            font-size="18"
+            letter-spacing="3"
+            fill="#000000"
+            text-anchor="middle"
+          >PRO</text>
+
+          <!-- ╔══ Thin separator line ══╗ -->
+          <line x1="196" y1="114" x2="440" y2="114" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+
+          <!-- ╔══ TAGLINE under PRO ══╗ -->
+          <text
+            x="200" y="130"
+            font-family="'Barlow', Arial, sans-serif"
+            font-weight="500"
+            font-size="11"
+            letter-spacing="3.5"
+            fill="rgba(255,255,255,0.38)"
+          >ANÁLISE · APOSTAS · RESULTADOS</text>
+        </svg>
+
+        <!-- Metallic gleam overlay -->
+        <div class="gleam-overlay"></div>
+      </div>
+    </div>
+
+    <!-- ENTER BUTTON (appears at ~5s) -->
+    <button class="enter-btn" id="enterBtn" onclick="enterSite()">
+      Entrar
+    </button>
+
+  </div>
+
+  <!-- Tagline bottom -->
+  <div class="tagline">© 2025 Handicap Pro — Plataforma Premium de Apostas</div>
+
+  <!-- App content placeholder -->
+  <div id="app">
+    <!-- Your main app goes here -->
+  </div>
+
+  <script>
+    // ── Ambient floating particles ──
+    const container = document.getElementById('particles');
+    const PARTICLE_COUNT = 22;
+
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+
+      const startX = Math.random() * 100;
+      const startY = 30 + Math.random() * 60;
+      const size = 1 + Math.random() * 2.5;
+      const dur = 4 + Math.random() * 7;
+      const delay = Math.random() * 6;
+      const driftX = -20 + Math.random() * 40;
+      const driftY = -60 - Math.random() * 80;
+
+      p.style.cssText = `
+        left: ${startX}vw;
+        top: ${startY}vh;
+        width: ${size}px;
+        height: ${size}px;
+        animation: particleDrift ${dur}s ease-in ${delay}s infinite;
+        --dx: ${driftX}px;
+        --dy: ${driftY}px;
+      `;
+      container.appendChild(p);
+    }
+
+    // Inject keyframes for particles dynamically
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes particleDrift {
+        0%   { opacity: 0;    transform: translate(0, 0) scale(1); }
+        15%  { opacity: 0.55; }
+        70%  { opacity: 0.3; }
+        100% { opacity: 0;    transform: translate(var(--dx), var(--dy)) scale(0.4); }
+      }
+    `;
+    document.head.appendChild(style);
+
+    // ── Enter site transition ──
+    function enterSite() {
+      const screen = document.getElementById('loading-screen');
+      screen.classList.add('exit');
+      screen.addEventListener('animationend', () => {
+        screen.style.display = 'none';
+        const app = document.getElementById('app');
+        app.style.display = 'grid';
+      }, { once: true });
+    }
+
+    // ── Keyboard: Enter key also triggers ──
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const btn = document.getElementById('enterBtn');
+        if (parseFloat(getComputedStyle(btn).opacity) > 0.5) {
+          enterSite();
+        }
+      }
+    });
+  </script>
+</body>
+</html>
